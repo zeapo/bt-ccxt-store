@@ -205,6 +205,12 @@ class CCXTBroker(with_metaclass(MetaCCXTBroker, BrokerBase)):
                 self.notify(o_order)
                 self.open_orders.remove(o_order)
 
+            # Check if the order has been closed
+            if ccxt_order[self.mappings['canceled_order']['key']] == self.mappings['canceled_order']['value']:
+                self.open_orders.remove(o_order)
+                o_order.cancel()
+                self.notify(o_order)
+
     def _submit(self, owner, data, exectype, side, amount, price, params):
         order_type = self.order_types.get(exectype) if exectype else 'market'
 
